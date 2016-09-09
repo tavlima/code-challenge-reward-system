@@ -1,8 +1,9 @@
 FROM java:8-alpine
-MAINTAINER Your Name <you@example.com>
+MAINTAINER Thiago Lima <t.augusto@gmail.com>
 
-ADD target/app-standalone.jar /nubank-invitation-reward-program/app.jar
+ADD target/reward-system-standalone.jar /reward-system/app.jar
+ADD resources/input.txt /reward-system/input.txt
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "/nubank-invitation-reward-program/app.jar"]
+CMD ["java", "-jar", "/reward-system/app.jar", "/reward-system/input.txt"]

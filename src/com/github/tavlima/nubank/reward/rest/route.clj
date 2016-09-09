@@ -9,8 +9,7 @@
 (def wrap (partial conj common-interceptors))
 
 ;; Tabular routes
-(def routes #{["/"                  :get  (wrap #'port/home-page)   :route-name :home-page]
-              ["/about"             :get  (wrap #'port/about-page)  :route-name :about-page]
-              ["/users/:uid"        :get  (wrap #'port/get-user)    :route-name :get-user]
-              ["/users/:uid/invite" :post (wrap #'port/invite)      :route-name :invite]
-              ["/ranking"           :get  (wrap #'port/get-ranking) :route-name :get-ranking]})
+(def routes #{["/"                   :get   (wrap #'port/home-page)    :route-name :home-page]
+              ["/ranking"            :get   (wrap #'port/get-ranking)  :route-name :get-ranking]
+              ["/users/:uid"         :get   (wrap #'port/get-user)     :route-name :get-user  :constraints {:uid #"[0-9]+"}]
+              ["/users/:uid/invite"  :post  (wrap #'port/invite)       :route-name :invite    :constraints {:uid #"[0-9]+"}]})

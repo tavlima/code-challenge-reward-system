@@ -4,15 +4,10 @@
 (defonce tree (atom (invitation/create-tree)))
 
 (defn invite [inviter invitee]
-  (swap! tree invitation/invite (Integer. inviter) (Integer. invitee)))
+  (swap! tree invitation/invite inviter invitee))
 
 (defn ranking []
   (invitation/ranking @tree))
 
 (defn get-user [userId]
-  (let [user (invitation/get-user @tree (Integer. userId))]
-    (if (nil? user)
-      {}
-      {:id (:id user)
-       :score (:score user)
-       :invited (map :id (:invited user))})))
+  (invitation/get-user @tree (Integer. userId)))

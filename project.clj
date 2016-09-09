@@ -1,8 +1,8 @@
 (defproject nubank-invitation-reward-program "0.0.1-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :description "Nubank's Reward System Code Challenge"
+  :url "https://github.com/tavlima/code-challenge-reward-system"
+  :license {:name "MIT License"
+            :url "https://github.com/tavlima/code-challenge-reward-system/blob/master/LICENSE"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [io.pedestal/pedestal.service "0.5.1"]
                  [io.pedestal/pedestal.jetty "0.5.1"]
@@ -15,7 +15,7 @@
                  [org.clojure/tools.cli "0.3.5"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
-  :uberjar-name "app-standalone.jar"
+  :uberjar-name "reward-system-standalone.jar"
   :profiles {:production {:env {:production true}}
              :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "com.github.tavlima.nubank.reward.rest.server/run-dev"]}
                    :dependencies [[io.pedestal/pedestal.service-tools "0.5.1"]

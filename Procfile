@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -jar target/app-standalone.jar resources/input.txt
+web: java $JVM_OPTS -jar target/reward-system-standalone.jar resources/input.txt

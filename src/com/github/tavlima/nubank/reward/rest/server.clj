@@ -16,9 +16,9 @@
   [["-h" "--help"]])
 
 (defn usage [options-summary]
-  (->> ["Nubank Invitation Reward Service"
+  (->> ["Nubank's Reward System"
         ""
-        "Usage: nirs [options] filename"
+        "Usage: reward-system [options] [filename]"
         ""
         "Arguments:"
         "  filename    File that should be loaded with the initial"
@@ -62,11 +62,11 @@
   (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)]
     (cond
       (:help options) (exit 0 (usage summary))
-      (not= (count arguments) 1) (exit 1 (usage summary))
       errors (exit 1 (error-msg errors)))
     (let [filename (first arguments)]
-      (do (println (format "Loading input file: %s ..." filename))
-          (bootstrap/process-file filename)
+      (do (if ((complement nil?) filename)
+            (do (println (format "Loading input file: %s ..." filename))
+                (bootstrap/process-file filename)))
           (println (format "Creating your %s server..." type))
           (server/start server)))))
 
