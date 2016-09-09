@@ -1,8 +1,7 @@
-(ns com.github.tavlima.nubank.reward.rest.core.controller
+(ns com.github.tavlima.nubank.reward.rest.controller
   (:require [ring.util.response :as resp]
             [io.pedestal.http :as http]
-            [com.github.tavlima.nubank.reward.rest.adapter-invitations :as adapter]
-            [com.github.tavlima.nubank.reward.util :as util]))
+            [com.github.tavlima.nubank.reward.rest.adapter-invitations :as adapter]))
 
 (defn- bad-request []
   {:status  400

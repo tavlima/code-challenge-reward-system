@@ -2,6 +2,46 @@
 
 A Clojure solution for the Nubank's Reward System Code Challenge.
 
+## Solution specifics
+
+This solution was written in Clojure, with Pedestal as the web framework, Leiningen as build tool and Midje as the testing lib.
+
+I also tried to follow the [hexagonal/port-adapter architecture](http://alistair.cockburn.us/Hexagonal+architecture) but, as I had no previous experience with Clojure nor this particular architecture, I'm sure there's a lot of room to improvement.  
+
+### Namespaces
+
+The code is split in 4 namespaces:
+
+* **invitations** - tree navigation/operations and business rules
+* **persistence** - stores the invitations' tree
+* **rest** - drives the application by HTTP requests
+* **main** - Pedestal boilerplate, routes and input file handling
+
+#### invitations
+
+Most of the code in this namespace operates over a tree/map, with a `:root` node and an additional `:users` hash-set to speed-up exists/contains operations. All the operations that requires a navigation or update over the tree is made through the `clojure.zip/zipper` utility and related functions.
+
+* **domain** - Functions that manipulates the tree and it's nodes (create, find, add score, etc) as well as the zipper functions
+* **controller** - Functions that implements the business rules by coordinating the tree navigation, checks and updates
+* **port** - The "public" interface of this namespace/component. Currently, it just wraps the controller's functions that should be publicly exposed.
+
+#### persistence
+
+This persistence module is backed by a single `atom`, where the current invitation tree is stored and updated. As there's no real persistence here, like a file or a proper datastore, all changes are lost on application shutdown.
+
+#### rest
+
+* **adapter-invitations** - Binds the `invitations`/`persistence` layers and do the required parameters transformation. 
+* **controller** - Functions that validate the input, call the `invitations` namespace's functions (through the `adapter-invitations`) and check the results. If ok, do any required transformation and return. Otherwise, return the proper error response.
+* **port** - The "public" interface of this namespace/component. It's responsible for extracting the parameters from the HTTP request map and calling the proper controller function. The Pedestal routing map points to this namespace.
+
+#### main
+
+* **server** - Pedestal start-up (dev/prod) and argument handling
+* **service** - Pedestal server settings
+* **route** - Pedestal routing map
+* **bootstrap** - Input file reading/parsing/loading. It calls the `rest.adapter-invitations` functions to handle each invitation record. 
+
 ## Build and running
 
 This solution uses Leiningen as it's build tool. The `FILE` argument mentioned in the next sections is optional (more details [here](#input-file)). If no `FILE` is supplied, the registry starts empty.

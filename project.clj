@@ -17,10 +17,10 @@
   :resource-paths ["config", "resources"]
   :uberjar-name "reward-system-standalone.jar"
   :profiles {:production {:env {:production true}}
-             :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "com.github.tavlima.nubank.reward.rest.server/run-dev"]}
+             :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "com.github.tavlima.nubank.reward.main.server/run-dev"]}
                    :dependencies [[io.pedestal/pedestal.service-tools "0.5.1"]
                                   [midje "1.8.3"]]
                    :plugins [[lein-midje "3.2.1"]]}
-             :uberjar {:aot [com.github.tavlima.nubank.reward.rest.server]}}
-  :main ^{:skip-aot true} com.github.tavlima.nubank.reward.rest.server)
+             :uberjar {:aot [com.github.tavlima.nubank.reward.main.server]}}
+  :main ^{:skip-aot true} com.github.tavlima.nubank.reward.main.server)
 

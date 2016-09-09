@@ -1,6 +1,6 @@
-(ns com.github.tavlima.nubank.reward.rest.service
+(ns com.github.tavlima.nubank.reward.main.service
   (:require [io.pedestal.http :as http]
-            [com.github.tavlima.nubank.reward.rest.route :as route]))
+            [com.github.tavlima.nubank.reward.main.route :as route]))
 
 (def service {:env :prod
               ::http/routes route/routes

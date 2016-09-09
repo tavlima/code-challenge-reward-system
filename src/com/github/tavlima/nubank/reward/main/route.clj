@@ -1,8 +1,7 @@
-(ns com.github.tavlima.nubank.reward.rest.route
+(ns com.github.tavlima.nubank.reward.main.route
   (:require [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.params :as params]
             [io.pedestal.http :as http]
-            [com.github.tavlima.nubank.reward.rest.core.port :as port]))
+            [com.github.tavlima.nubank.reward.rest.port :as port]))
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 

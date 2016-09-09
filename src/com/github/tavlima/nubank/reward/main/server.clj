@@ -1,12 +1,12 @@
-(ns com.github.tavlima.nubank.reward.rest.server
+(ns com.github.tavlima.nubank.reward.main.server
   (:gen-class) ; for -main method in uberjar
   (:require [clojure.tools.cli :as cli]
             [clojure.string :as string]
             [io.pedestal.http :as server]
             [io.pedestal.http.route :as route]
-            [com.github.tavlima.nubank.reward.rest.bootstrap :as bootstrap]
-            [com.github.tavlima.nubank.reward.rest.service :as service]
-            [com.github.tavlima.nubank.reward.rest.route :as service-route]))
+            [com.github.tavlima.nubank.reward.main.bootstrap :as bootstrap]
+            [com.github.tavlima.nubank.reward.main.service :as service]
+            [com.github.tavlima.nubank.reward.main.route :as service-route]))
 
 ;; This is an adapted service map, that can be started and stopped
 ;; From the REPL you can call server/start and server/stop on this service

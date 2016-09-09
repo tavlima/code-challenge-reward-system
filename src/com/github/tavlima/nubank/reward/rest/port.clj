@@ -1,5 +1,5 @@
-(ns com.github.tavlima.nubank.reward.rest.core.port
-  (:require [com.github.tavlima.nubank.reward.rest.core.controller :as controller]))
+(ns com.github.tavlima.nubank.reward.rest.port
+  (:require [com.github.tavlima.nubank.reward.rest.controller :as controller]))
 
 (defn home-page [_]
   (controller/home-page))
