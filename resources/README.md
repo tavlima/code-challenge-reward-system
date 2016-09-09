@@ -42,6 +42,10 @@ This persistence module is backed by a single `atom`, where the current invitati
 * **route** - Pedestal routing map
 * **bootstrap** - Input file reading/parsing/loading. It calls the `rest.adapter-invitations` functions to handle each invitation record. 
 
+### Tests
+
+I tried to keep the tests as simple as possible, focusing on the `invitations` namespace. Besides being mostly straight-forward, the remaining namespaces and functions would require some mocking/integration machinery to be fully tested.
+
 ## Build and running
 
 This solution uses Leiningen as it's build tool. The `FILE` argument mentioned in the next sections is optional (more details [here](#input-file)). If no `FILE` is supplied, the registry starts empty.
