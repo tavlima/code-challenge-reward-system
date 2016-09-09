@@ -1,15 +1,10 @@
-(ns com.github.tavlima.nubank.reward.util
-  (require [clojure.pprint :as pprint]))
+(ns com.github.tavlima.nubank.reward.util)
 
 (defn exp [x n]
   "Calculates x^n. 'n' must be an integer."
   (loop [acc 1 n n]
     (if (zero? n) acc
                   (recur (* x acc) (dec n)))))
-
-(defn str->int
-  [str]
-  (Integer. str))
 
 (defn is-integer? [s]
   (if ((complement nil?) s)
@@ -22,3 +17,16 @@
             (empty? s)))
         false))
     false))
+
+(defn decode
+  [data]
+  (cond ((complement string?) data)
+        data
+
+        (is-integer? data)
+        (Integer. data)
+
+        (= (first data) \:)
+        (keyword (apply str (rest data)))
+
+        :else data))

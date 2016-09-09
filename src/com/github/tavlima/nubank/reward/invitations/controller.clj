@@ -1,7 +1,9 @@
 (ns com.github.tavlima.nubank.reward.invitations.controller
   (require [clojure.zip :as z]
-           [com.github.tavlima.nubank.reward.invitations.domain :as domain]
-           [com.github.tavlima.nubank.reward.util :as util]))
+           [com.github.tavlima.nubank.reward
+            [util :as util]
+            [compare :as compare]]
+           [com.github.tavlima.nubank.reward.invitations.domain :as domain]))
 
 (defn- ^{:testable true} update-score [loc level]
   (if (>= level 0)
@@ -46,8 +48,8 @@
 (defn- ^{:testable true} by-score-id
   [x y]
   ;; by score (DESC) -> by id (ASC)
-  (compare [(:score y) (:id x)]
-           [(:score x) (:id y)]))
+  (compare/cc-cmp [(:score y) (:id x)]
+               [(:score x) (:id y)]))
 
 (defn create-tree []
   (domain/create-tree))

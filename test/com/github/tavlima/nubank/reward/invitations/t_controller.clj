@@ -70,8 +70,8 @@
              (add-user {:root {:id 1 :verified false :score 0 :invited []} :users #{1}} 1 2)
              => {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}}
 
-             (add-user {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}} 1 2)
-             => {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}})
+             (add-user {:root {:id :a :verified true :score 0 :invited [{:id "b" :verified false :score 0 :invited []}]} :users #{:a "b"}} :a "b")
+             => {:root {:id :a :verified true :score 0 :invited [{:id "b" :verified false :score 0 :invited []}]} :users #{:a "b"}})
 
        (fact "it adds the new invitee node, but only if it does not yet exist"
              (add-user {:root {:id 1 :verified false :score 0 :invited []} :users #{1}} 1 2)
@@ -81,8 +81,8 @@
              => {:root {:id 1 :verified true :score 0 :invited []} :users #{1}})
 
        (fact "it locates the inviter node, adds the new invitee node as it's child, adds the invitee id to the tree user's hashset and proceed with the verification process"
-             (add-user {:root {:id 1 :verified false :score 0 :invited []} :users #{1}} 1 2)
-             => {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}}
+             (add-user {:root {:id :a :verified false :score 0 :invited []} :users #{:a}} :a 2)
+             => {:root {:id :a :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{:a 2}}
 
              (add-user {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}} 2 3)
              => {:root {:id 1 :verified true :score 1 :invited [{:id 2 :verified true :score 0 :invited [{:id 3 :verified false :score 0 :invited []}]}]} :users #{1 2 3}})
@@ -95,9 +95,9 @@
 
 (facts "about `scores-map`"
        (fact "it builds a id->score map from the zipper"
-             (-> (d/zipper {:id 1 :invited [] :score 0})
+             (-> (d/zipper {:id :a :invited [] :score 0})
                  (scores-map))
-             => {1 0}
+             => {:a 0}
 
              (-> (d/zipper {:id 1 :invited [{:id 2 :invited [{:id 3 :invited [{:id 5 :invited [] :score 0}] :score 0}] :score 1} {:id 4 :invited [] :score 0}] :score 3/2})
                  (scores-map))
@@ -106,14 +106,16 @@
 (facts "about `by-score-id`"
        (fact "it compares the :score (desc) and the :id (asc)"
              (by-score-id {:id 1 :score 0} {:id 2 :score 0}) => #(< % 0)
+             (by-score-id {:id :a :score 0} {:id "b" :score 0}) => #(< % 0)
+             (by-score-id {:id 1 :score 0} {:id "2" :score 0}) => #(< % 0)
              (by-score-id {:id 2 :score 0} {:id 1 :score 0}) => #(> % 0)
              (by-score-id {:id 1 :score 0} {:id 2 :score 1}) => #(> % 0)
              (by-score-id {:id 2 :score 1} {:id 1 :score 0}) => #(< % 0)))
 
 (facts "about `invite`"
        (fact "it adds the invited user to the tree"
-             (invite {:root {:id 1 :verified false :score 0 :invited []} :users #{1}} 1 2)
-             => {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}})
+             (invite {:root {:id 1 :verified false :score 0 :invited []} :users #{1}} 1 "2")
+             => {:root {:id 1 :verified true :score 0 :invited [{:id "2" :verified false :score 0 :invited []}]} :users #{1 "2"}})
 
        (fact "it ignores invitations if the inviter does not exist "
              (invite {:root {:id 1 :verified true :score 0 :invited [{:id 2 :verified false :score 0 :invited []}]} :users #{1 2}} 3 4)

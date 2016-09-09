@@ -9,6 +9,9 @@
    :headers {}
    :body    "Bad Request"})
 
+(defn- not-found []
+  (resp/not-found "Not Found"))
+
 (defn home-page []
   (resp/response "Nubank's Reward System"))
 
@@ -19,16 +22,13 @@
 (defn get-user [uid]
   (let [user (adapter/get-user uid)]
     (if (nil? user)
-      (resp/not-found "Not Found")
-      (http/json-response {:id (:id user)
-                           :score (:score user)
+      (not-found)
+      (http/json-response {:id      (:id user)
+                           :score   (:score user)
                            :invited (map :id (:invited user))}))))
 
 (defn invite [inviter invitee]
-  (if (and (util/is-integer? inviter)
-           (util/is-integer? invitee))
-    (let [inviter (Integer. inviter)
-          invitee (Integer. invitee)]
-      (do (adapter/invite inviter invitee)
-          (get-user inviter)))
+  (if (string? invitee)
+    (do (adapter/invite inviter invitee)
+        (get-user inviter))
     (bad-request)))

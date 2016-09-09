@@ -19,7 +19,7 @@ This solution uses Leiningen as it's build tool. The `FILE` argument mentioned i
 
 ### Get user's info
 
-Gets user's information. Returns status code `404` if the requested user is invalid (doesn't exist or is not an integer).
+Gets user's information.
 
 **Request**
 
@@ -27,22 +27,23 @@ Gets user's information. Returns status code `404` if the requested user is inva
 
 **Parameters**
 
-* `:id` - User id
+* `:id` - User id (string)
 
 **Response format**
 
 ```
 {
-  "id": 1,       // :id
-  "score": 1.0,  // current score
-  "invited": [2] // ids of the users invited by this one
+  "id": "1",       // :id
+  "score": 1.0,    // current score
+  "invited": ["2"] // ids of the users invited by this one
 }
 ```
 
 **Return codes**
 
-* `200 OK` - Sucess
-* `404 Not Found` - `:id` is invalid (not an integer)
+* `200 OK` - Success
+* `400 Bad Request` - `:id` is invalid
+* `404 Not Found` - `:id` doesn't exist
 
 ### Invite a new user
 
@@ -62,24 +63,24 @@ Invites a new user and returns the updated inviter.
 
 **Parameters**
 
-* `:inviter` - The inviter's user id (integer)
-* `:invitee` - The invitee's user id (integer)
+* `:inviter` - The inviter's user id (string)
+* `:invitee` - The invitee's user id (string)
 
 **Response format**
 
 ```
 {
-  "id": 1,         // :id
-  "score": 1.0,    // current score
-  "invited": [2,3] // ids of the users invited by this one
+  "id": "1",           // :id
+  "score": 1.0,        // current score
+  "invited": ["2","3"] // ids of the users invited by this one
 }
 ```
 
 **Return codes**
 
-* `200 OK` - Sucess
-* `400 Bad Request` - `:invitee` is missing or invalid (not an integer)
-* `404 Not Found` - `:inviter` is invalid (not an integer)
+* `200 OK` - Success
+* `400 Bad Request` - `:invitee`/`:inviter` is missing or invalid
+* `404 Not Found` - `:inviter` doesn't exist
 
 ### Ranking
 
@@ -93,16 +94,16 @@ Gets the current ranking. The response list is sorted by score (desc) and id (as
 
 ```
 [
-    {"id":1, "score":1.5},
-    {"id":2, "score":0},
-    {"id":3, "score":0},
-    {"id":4, "score":0}
+    {"id":"1", "score":1.5},
+    {"id":"2", "score":0},
+    {"id":"3", "score":0},
+    {"id":"4", "score":0}
 ]
 ```
 
 **Return codes**
 
-* `200 OK` - Sucess
+* `200 OK` - Success
 
 ## Testing
 
@@ -137,15 +138,15 @@ Both Heroku and Docker starts the application with the default [input file](#inp
 
 Optionally, you can supply an input file from where the application will read the invitation records and populate the registry.
 
-The file should have one invitation per line, in the `inviterId inviteeId` format. Both `inviterId` and `inviteeId` should be integers.
+The file should have one invitation per line, in the `inviterId inviteeId` format. Both `inviterId` and `inviteeId` will be handled as strings.
 
 Example:
 
 ```
 1 2
-1 3
-3 4
-3 5
+1 abc
+abc c
+1 c
 2 4
 ```
 

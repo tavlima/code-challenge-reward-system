@@ -5,9 +5,9 @@
 
 (facts "about `str->int`"
        (fact "it converts a string to int"
-             (str->int "1") => 1
-             (str->int "2") => 2
-             (str->int "10") => 10))
+             (decode "1") => 1
+             (decode "2") => 2
+             (decode "10") => 10))
 
 (facts "about `exp`"
        (fact "it calculates x^n"

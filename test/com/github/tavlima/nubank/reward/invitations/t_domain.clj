@@ -7,7 +7,10 @@
 (facts "about `create-user`"
        (fact "it creates a new UNCONFIRMED user, with ZERO score and NO invitations"
              (domain/create-user 1) => {:id 1 :score 0 :invited [] :verified false}
-             (domain/create-user 2) => {:id 2 :score 0 :invited [] :verified false}))
+             (domain/create-user 2) => {:id 2 :score 0 :invited [] :verified false}
+             (domain/create-user "a") => {:id "a" :score 0 :invited [] :verified false}
+             (domain/create-user -1) => {:id -1 :score 0 :invited [] :verified false}
+             (domain/create-user :uid) => {:id :uid :score 0 :invited [] :verified false}))
 
 (facts "about `add-score`"
        (fact "it returns an updated map with :score added by `score-inc`"
@@ -27,15 +30,27 @@
 
        (fact "it can be built with pre-defined root and users"
              (domain/create-tree {:id 1 :score 0 :invited [] :verified false} #{1})
-             => {:root {:id 1 :score 0 :invited [] :verified false} :users #{1}}))
+             => {:root {:id 1 :score 0 :invited [] :verified false} :users #{1}}
+
+             (domain/create-tree {:id "a" :score 0 :invited [] :verified false} #{"a"})
+             => {:root {:id "a" :score 0 :invited [] :verified false} :users #{"a"}}
+
+             (domain/create-tree :anything #{})
+             => {:root :anything :users #{}}))
 
 (facts "about `create-tree-with-user`"
        (fact "it creates a new tree with the a new user as root"
              (domain/create-tree-with-user 1)
              => {:root {:id 1 :score 0 :invited [] :verified false} :users #{1}}
 
-             (domain/create-tree-with-user 2)
-             => {:root {:id 2 :score 0 :invited [] :verified false} :users #{2}}))
+             (domain/create-tree-with-user -2)
+             => {:root {:id -2 :score 0 :invited [] :verified false} :users #{-2}}
+
+             (domain/create-tree-with-user "a")
+             => {:root {:id "a" :score 0 :invited [] :verified false} :users #{"a"}}
+
+             (domain/create-tree-with-user :a)
+             => {:root {:id :a :score 0 :invited [] :verified false} :users #{:a}}))
 
 (facts "about `has-user?`"
        (fact "it checks if a userId exists in the :users hash-set"
@@ -58,16 +73,16 @@
 
 (facts "about `find-first-by-id`"
        (let [root {:id 1 :invited [{:invited [{:id 1 :invited []}]}
-                                   {:id 3 :invited [{:id 4 :invited []}]}]}
+                                   {:id "a" :invited [{:id :a :invited []}]}]}
              zipper (domain/zipper root)]
          (fact "it returns the first loc in the zipper, depth first, which node has the expected :id value"
-               (-> (domain/find-first-by-id zipper 4)
+               (-> (domain/find-first-by-id zipper "a")
                    (zip/node))
-               => #(= {:id 4 :invited []} %)
+               => #(= {:id "a" :invited [{:id :a :invited []}]} %)
 
-               (-> (domain/find-first-by-id zipper 3)
+               (-> (domain/find-first-by-id zipper :a)
                    (zip/node))
-               => #(= {:id 3 :invited [{:id 4 :invited []}]} %)
+               => #(= {:id :a :invited []} %)
 
                (-> (domain/find-first-by-id zipper 1)
                    (zip/node))
@@ -80,10 +95,10 @@
 
 (facts "about `nodes`"
        (fact "it returns a list of all the nodes in the zipper, depth first, excluding all keys but :id, :score and :verified"
-             (-> {:id 1 :score 1 :verified true :dontcare true}
+             (-> {:id :a :score 1 :verified true :dontcare true}
                  (domain/zipper)
                  (domain/nodes))
-             => [{:id 1 :score 1 :verified true}]
+             => [{:id :a :score 1 :verified true}]
 
              (-> {:id 1 :score 1 :verified true :invited [{:id 2 :score 0 :verified true :invited [{:id 5 :score 0 :invited []}]}
                                                           {:id 3 :score 1 :invited [{:id 4 :invited [{}]}]}]}
