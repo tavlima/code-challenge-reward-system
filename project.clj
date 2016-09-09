@@ -13,7 +13,8 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/tools.cli "0.3.5"]
-                 [markdown-clj "0.9.89"]]
+                 [markdown-clj "0.9.89"]
+                 [environ "1.1.0"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :uberjar-name "reward-system-standalone.jar"
