@@ -10,8 +10,8 @@
 (defn home-page []
   (ring-resp/response "Nubank Invitation Reward Service"))
 
-(defn get-ranking [precision]
-  (-> (adapter/ranking precision)
+(defn get-ranking []
+  (-> (adapter/ranking)
       (http/json-response)))
 
 (defn get-user [uid]

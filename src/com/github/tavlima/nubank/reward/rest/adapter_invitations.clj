@@ -6,8 +6,8 @@
 (defn invite [inviter invitee]
   (swap! tree invitation/invite (Integer. inviter) (Integer. invitee)))
 
-(defn ranking [precision]
-  (invitation/ranking @tree precision))
+(defn ranking []
+  (invitation/ranking @tree))
 
 (defn get-user [userId]
   (let [user (invitation/get-user @tree (Integer. userId))]

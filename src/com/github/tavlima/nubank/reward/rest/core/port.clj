@@ -13,5 +13,5 @@
 (defn invite [request]
   (controller/invite (get-in request [:path-params :uid]) (get-in request [:form-params :invitee])))
 
-(defn get-ranking [request]
-  (controller/get-ranking (get-in request [:query-params :precision] 2)))
+(defn get-ranking [_]
+  (controller/get-ranking))
