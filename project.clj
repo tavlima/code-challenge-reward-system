@@ -19,7 +19,8 @@
   :profiles {:production {:env {:production true}}
              :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "com.github.tavlima.nubank.reward.rest.server/run-dev"]}
                    :dependencies [[io.pedestal/pedestal.service-tools "0.5.1"]
-                                  [midje "1.8.3"]]
+                                  [midje "1.8.3"]
+                                  [ring/ring-codec "1.0.1"]]
                    :plugins [[lein-midje "3.2.1"]]}
              :uberjar {:aot [com.github.tavlima.nubank.reward.rest.server]}}
   :main ^{:skip-aot true} com.github.tavlima.nubank.reward.rest.server)
