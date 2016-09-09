@@ -1,7 +1,9 @@
 (ns com.github.tavlima.nubank.reward.rest.controller
   (:require [ring.util.response :as resp]
             [io.pedestal.http :as http]
-            [com.github.tavlima.nubank.reward.rest.adapter-invitations :as adapter]))
+            [com.github.tavlima.nubank.reward.rest.adapter-invitations :as adapter]
+            [markdown.core :as md]
+            [clojure.java.io :as io]))
 
 (defn- bad-request []
   {:status  400
@@ -11,8 +13,11 @@
 (defn- not-found []
   (resp/not-found "Not Found"))
 
+(def readme-file
+  (io/file (io/resource "README.md")))
+
 (defn home-page []
-  (resp/response "Nubank's Reward System"))
+  (resp/response (md/md-to-html-string (slurp readme-file))))
 
 (defn get-ranking []
   (-> (adapter/ranking)
