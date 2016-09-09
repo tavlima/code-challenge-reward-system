@@ -1,5 +1,5 @@
 {
-  "name": "Nubank Invitation Reward Service",
+  "name": "Nubank Reward System",
   "description": "An implementation of the Nubank's code challenge.",
   "image": "heroku/clojure"
 }
