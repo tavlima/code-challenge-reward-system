@@ -122,7 +122,7 @@ This code can be easily deployed to Heroku. Just click this button:
 ### Docker
 
 1. Build an uberjar: `lein uberjar`
-2. Build a Docker image: `sudo docker build -t reward-system`
+2. Build a Docker image: `docker build -t reward-system .`
 3. Run the Docker image: `docker run -p 8080:8080 reward-system`
 
 ### JAR
