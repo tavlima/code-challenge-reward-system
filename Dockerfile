@@ -3,6 +3,7 @@ MAINTAINER Thiago Lima <t.augusto@gmail.com>
 
 ADD target/reward-system-standalone.jar /reward-system/app.jar
 ADD resources/input.txt /reward-system/input.txt
+ADD resources/README.md /reward-system/README.md
 
 EXPOSE 8080
 

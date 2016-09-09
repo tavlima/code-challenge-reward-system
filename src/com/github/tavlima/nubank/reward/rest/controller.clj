@@ -14,7 +14,7 @@
   (resp/not-found "Not Found"))
 
 (def readme-file
-  (io/file (io/resource "README.md")))
+  (io/resource "README.md"))
 
 (defn home-page []
   (resp/response (md/md-to-html-string (slurp readme-file))))
