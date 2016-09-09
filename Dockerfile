@@ -1,7 +1,7 @@
 FROM java:8-alpine
 MAINTAINER Your Name <you@example.com>
 
-ADD target/nubank-invitation-reward-program-0.0.1-SNAPSHOT-standalone.jar /nubank-invitation-reward-program/app.jar
+ADD target/app-standalone.jar /nubank-invitation-reward-program/app.jar
 
 EXPOSE 8080
 

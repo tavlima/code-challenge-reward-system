@@ -8,5 +8,5 @@
          (map util/str->int (clojure.string/split line #"\s+"))))
 
 (defn process-file [filename]
-  (with-open [reader (io/reader (io/resource filename))]
+  (with-open [reader (io/reader filename)]
     (reduce process-line nil (line-seq reader))))

@@ -65,7 +65,7 @@
       (not= (count arguments) 1) (exit 1 (usage summary))
       errors (exit 1 (error-msg errors)))
     (let [filename (first arguments)]
-      (do (println "Loading input file...")
+      (do (println (format "Loading input file: %s ..." filename))
           (bootstrap/process-file filename)
           (println (format "Creating your %s server..." type))
           (server/start server)))))
