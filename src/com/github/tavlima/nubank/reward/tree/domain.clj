@@ -52,14 +52,14 @@
       (loop [curLoc (loc/zipper root)]
         (cond (loc/end? curLoc) nil
               (matcher (loc/node curLoc)) curLoc
-              :else (recur (loc/goNext curLoc))))))
+              :else (recur (loc/next curLoc))))))
   (findFirst [tree uid]
     (findFirstByMatcher tree #(match? % uid)))
   (nodes [tree]
     (nodes tree [:id :score :verified]))
   (nodes [_ ks]
     (let [zipper (loc/zipper root)
-          iterator (iterate loc/goNext zipper)
+          iterator (iterate loc/next zipper)
           locs (take-while (complement loc/end?) iterator)
           nodes (map loc/node locs)
           nodesFields (map #(fields % ks) nodes)]

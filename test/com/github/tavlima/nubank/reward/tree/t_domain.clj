@@ -46,11 +46,11 @@
        (fact "it creates an new Location from the user"
              (-> (d/create-user :a)
                  (l/zipper)
-                 (select-keys [:node :path :left :right]))
+                 (select-keys [:node :path :s-left :s-right]))
              => {:node (d/create-user :a)
                  :path [:nil]
-                 :left [:nil]
-                 :right [:nil]}))
+                 :s-left [:nil]
+                 :s-right [:nil]}))
 
 (facts "about `addScore`"
        (fact "it sums delta to the current :score"

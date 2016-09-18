@@ -1,5 +1,5 @@
 (ns com.github.tavlima.nubank.reward.tree.location
-  (:refer-clojure :exclude [update replace])
+  (:refer-clojure :exclude [update replace next])
   (:import (clojure.lang Keyword)))
 
 (declare cloneLoc)
@@ -10,10 +10,10 @@
   (end? [loc])
   (replace [loc node])
   (update [loc transform])
-  (goDown [loc])
-  (goRight [loc])
-  (goNext [loc])
-  (goUp [loc])
+  (down [loc])
+  (right [loc])
+  (next [loc])
+  (up [loc])
   (root [loc])
   (append-child [loc child]))
 
@@ -31,46 +31,46 @@
   (make [node _]
     (if (= node :nil) :nil (throw IllegalArgumentException))))
 
-(defrecord Location [node path left right]
+(defrecord Location [node path s-left s-right]
   ILocation
   (node [_] node)
 
   (end? [_] (= node :nil))
 
   (replace [_ newNode]
-    (->Location newNode path left right))
+    (->Location newNode path s-left s-right))
 
   (update [_ transform]
-    (->Location (transform node) path left right))
+    (->Location (transform node) path s-left s-right))
 
   (append-child [_ child]
     (-> (children node)
         (conj child)
         (#(make node %))
-        (->Location path left right)))
+        (->Location path s-left s-right)))
 
-  (goDown [_]
+  (down [_]
     (let [[child & others] (children node)]
       (if child
         (->Location child
                     (cons node path)
-                    [left]
-                    (conj (into [] others) right))
+                    [s-left]
+                    (conj (into [] others) s-right))
         nil)))
 
-  (goRight [_]
-    (let [[sibling & others] right]
+  (right [_]
+    (let [[sibling & others] s-right]
       (if ((complement vector?) sibling)
-        (->Location sibling path (conj left node) (into [] others))
+        (->Location sibling path (conj s-left node) (into [] others))
         nil)))
 
-  (goUp [_]
+  (up [_]
     (let [[parent & others] path]
       (if (= :nil parent)
         nil
-        (let [[parent-left & siblings-left] left
-              siblings-right (into [] (butlast right))
-              parent-right (last right)
+        (let [[parent-left & siblings-left] s-left
+              siblings-right (into [] (butlast s-right))
+              parent-right (last s-right)
               new-parent-children (concat (conj (into [] siblings-left) node) siblings-right)
               new-node (make parent new-parent-children)
               new-path (into [] others)]
@@ -78,18 +78,18 @@
 
   (root [loc]
     (loop [curLoc loc]
-      (let [parent (goUp curLoc)]
+      (let [parent (up curLoc)]
         (if (nil? parent)
           curLoc
           (recur parent)))))
 
-  (goNext [loc]
-    (or (goDown loc)
-        (goRight loc)
-        (loop [parentLoc (goUp loc)]
+  (next [loc]
+    (or (down loc)
+        (right loc)
+        (loop [parentLoc (up loc)]
           (if (end? parentLoc)
             nil
-            (let [uncleLoc (goRight parentLoc)]
+            (let [uncleLoc (right parentLoc)]
               (if uncleLoc
                 uncleLoc
-                (recur (goUp parentLoc)))))))))
+                (recur (up parentLoc)))))))))

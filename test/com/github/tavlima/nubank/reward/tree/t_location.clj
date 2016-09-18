@@ -49,16 +49,16 @@
              (z/replace (z/zipper {:value 1}) {:anothervalue 2})
              => {:node  {:anothervalue 2}
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}))
+                 :s-left  [:nil]
+                 :s-right [:nil]}))
 
 (facts "about `update`"
        (fact "it calls the function, passing the current node, and updates only the :node value"
              (z/update (z/zipper {:value 1}) #(assoc % :value (inc (:value %))))
              => {:node  {:value 2}
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}))
+                 :s-left  [:nil]
+                 :s-right [:nil]}))
 
 (facts "about `append-child`"
        (fact "it returns an updated location with the new child"
@@ -66,147 +66,147 @@
                  (z/append-child nodeE))
              => {:node  {:value :d :children [{:value :e :children []}]}
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}
+                 :s-left  [:nil]
+                 :s-right [:nil]}
              (-> (z/zipper nodeC)
                  (z/append-child nodeD))
              => {:node  {:value :c :children [{:value :g :children []}
                                               {:value :d :children []}]}
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}))
+                 :s-left  [:nil]
+                 :s-right [:nil]}))
 
-(facts "about `goDown`"
+(facts "about `down`"
        (fact "it returns nil if the node has no child"
              (-> (z/zipper nodeG)
-                 (z/goDown))
+                 (z/down))
              => nil)
        (fact "it moves to nodeB"
              (-> (z/zipper nodeA)
-                 (z/goDown))
+                 (z/down))
              => {:node  nodeB
                  :path  [nodeA :nil]
-                 :left  [[:nil]]
-                 :right [nodeC nodeD [:nil]]})
+                 :s-left  [[:nil]]
+                 :s-right [nodeC nodeD [:nil]]})
        (fact "it moves to nodeE"
              (-> (z/zipper nodeA)
-                 (z/goDown)
-                 (z/goDown))
+                 (z/down)
+                 (z/down))
              => {:node  nodeE
                  :path  [nodeB nodeA :nil]
-                 :left  [[[:nil]]]
-                 :right [nodeF [nodeC nodeD [:nil]]]}))
+                 :s-left  [[[:nil]]]
+                 :s-right [nodeF [nodeC nodeD [:nil]]]}))
 
-(facts "about `goRight`"
+(facts "about `right`"
        (fact "it returns nil if the node has no right siblings"
              (-> (z/zipper nodeC)
-                 (z/goDown)
-                 (z/goRight))
+                 (z/down)
+                 (z/right))
              => nil)
        (fact "it moves to nodeC"
              (-> (z/zipper nodeA)
-                 (z/goDown)
-                 (z/goRight))
+                 (z/down)
+                 (z/right))
              => {:node  nodeC
                  :path  [nodeA :nil]
-                 :left  [[:nil] nodeB]
-                 :right [nodeD [:nil]]})
+                 :s-left  [[:nil] nodeB]
+                 :s-right [nodeD [:nil]]})
        (fact "it moves to nodeF"
              (-> (z/zipper nodeA)
-                 (z/goDown)
-                 (z/goDown)
-                 (z/goRight))
+                 (z/down)
+                 (z/down)
+                 (z/right))
              => {:node  nodeF
                  :path  [nodeB nodeA :nil]
-                 :left  [[[:nil]] nodeE]
-                 :right [[nodeC nodeD [:nil]]]}))
+                 :s-left  [[[:nil]] nodeE]
+                 :s-right [[nodeC nodeD [:nil]]]}))
 
-(facts "about `goUp`"
+(facts "about `up`"
        (fact "it returns nil if already at the root"
-             (z/goUp (z/zipper lonelyRoot)) => nil)
+             (z/up (z/zipper lonelyRoot)) => nil)
        (fact "it moves from B to A"
-             (-> (z/zipper nodeA) (z/goNext) (z/goUp))
+             (-> (z/zipper nodeA) (z/next) (z/up))
              => (z/zipper nodeA))
        (fact "it moves from F to B"
-             (-> (z/zipper nodeA) (z/goNext) (z/goNext) (z/goNext) (z/goUp))
+             (-> (z/zipper nodeA) (z/next) (z/next) (z/next) (z/up))
              => {:node  nodeB
                  :path  [nodeA :nil]
-                 :left  [[:nil]]
-                 :right [nodeC nodeD [:nil]]})
+                 :s-left  [[:nil]]
+                 :s-right [nodeC nodeD [:nil]]})
        (fact "it preserves the updates"
-             (-> (z/zipper nodeC) (z/goNext) (z/update #(assoc % :updated true)) (z/goUp))
+             (-> (z/zipper nodeC) (z/next) (z/update #(assoc % :updated true)) (z/up))
              => {:node  {:value :c :children [(assoc nodeG :updated true)]}
-                 :left  [:nil]
+                 :s-left  [:nil]
                  :path  [:nil]
-                 :right [:nil]}))
+                 :s-right [:nil]}))
 
 (facts "about `root`"
        (fact "it moves up to the root"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext) (z/goNext) (z/goNext) (z/goNext) (z/goNext)
+                 (z/next) (z/next) (z/next) (z/next) (z/next) (z/next)
                  (z/root))
              => {:node  nodeA
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}
+                 :s-left  [:nil]
+                 :s-right [:nil]}
              (-> nodeA
                  (z/zipper)
                  (z/root))
              => {:node  nodeA
                  :path  [:nil]
-                 :left  [:nil]
-                 :right [:nil]}))
+                 :s-left  [:nil]
+                 :s-right [:nil]}))
 
-(facts "about `goNext`"
+(facts "about `next`"
        (fact "end? is true after lonelyNode"
-             (z/end? (z/goNext (z/zipper lonelyRoot)))
+             (z/end? (z/next (z/zipper lonelyRoot)))
              => true)
        (fact "it moves to nodeB"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext))
+                 (z/next))
              => {:node  nodeB
                  :path  [nodeA :nil]
-                 :left  [[:nil]]
-                 :right [nodeC nodeD [:nil]]})
+                 :s-left  [[:nil]]
+                 :s-right [nodeC nodeD [:nil]]})
        (fact "it moves to nodeE"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext))
+                 (z/next) (z/next))
              => {:node  nodeE
                  :path  [nodeB nodeA :nil]
-                 :left  [[[:nil]]]
-                 :right [nodeF [nodeC nodeD [:nil]]]})
+                 :s-left  [[[:nil]]]
+                 :s-right [nodeF [nodeC nodeD [:nil]]]})
        (fact "it moves to nodeF"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext) (z/goNext))
+                 (z/next) (z/next) (z/next))
              => {:node  nodeF
                  :path  [nodeB nodeA :nil]
-                 :left  [[[:nil]] nodeE]
-                 :right [[nodeC nodeD [:nil]]]})
+                 :s-left  [[[:nil]] nodeE]
+                 :s-right [[nodeC nodeD [:nil]]]})
        (fact "it moves to nodeC"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext) (z/goNext) (z/goNext))
+                 (z/next) (z/next) (z/next) (z/next))
              => {:node  nodeC
                  :path  [nodeA :nil]
-                 :left  [[:nil] nodeB]
-                 :right [nodeD [:nil]]})
+                 :s-left  [[:nil] nodeB]
+                 :s-right [nodeD [:nil]]})
        (fact "it moves to nodeG"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext) (z/goNext) (z/goNext) (z/goNext))
+                 (z/next) (z/next) (z/next) (z/next) (z/next))
              => {:node  nodeG
                  :path  [nodeC nodeA :nil]
-                 :left  [[[:nil] nodeB]]
-                 :right [[nodeD [:nil]]]})
+                 :s-left  [[[:nil] nodeB]]
+                 :s-right [[nodeD [:nil]]]})
        (fact "it moves to nodeD"
              (-> nodeA
                  (z/zipper)
-                 (z/goNext) (z/goNext) (z/goNext) (z/goNext) (z/goNext) (z/goNext))
+                 (z/next) (z/next) (z/next) (z/next) (z/next) (z/next))
              => {:node  nodeD
                  :path  [nodeA :nil]
-                 :left  [[:nil] nodeB nodeC]
-                 :right [[:nil]]}))
+                 :s-left  [[:nil] nodeB nodeC]
+                 :s-right [[:nil]]}))
