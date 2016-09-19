@@ -19,7 +19,7 @@ The code is split in 4 namespaces:
 
 #### invitations
 
-Most of the code in this namespace operates over a tree/map, with a `:root` node and an additional `:users` hash-set to speed-up exists/contains operations. All the operations that requires a navigation or update over the tree is made through the `clojure.zip/zipper` utility and related functions.
+Most of the code in this namespace operates over a tree/map, with a `:root` node and an additional `:users` hash-set to speed-up exists/contains operations. All the operations that requires a navigation or update over the tree are made through the `clojure.zip/zipper` utility and related functions.
 
 * **domain** - Functions that manipulates the tree and it's nodes (create, find, add score, etc) as well as the zipper functions
 * **controller** - Functions that implements the business rules by coordinating the tree navigation, checks and updates

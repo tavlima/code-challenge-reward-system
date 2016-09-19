@@ -1,6 +1,5 @@
 (ns com.github.tavlima.nubank.reward.tree.location
-  (:refer-clojure :exclude [update replace next])
-  (:import (clojure.lang Keyword)))
+  (:refer-clojure :exclude [update replace next]))
 
 (declare cloneLoc)
 
@@ -24,7 +23,7 @@
   (make [node children])
   (zipper [node]))
 
-(extend-protocol ILocatable
+#_(extend-protocol ILocatable
   Keyword
   (children [node]
     (if (= node :nil) [] (throw IllegalArgumentException)))

@@ -1,5 +1,5 @@
 (ns com.github.tavlima.nubank.reward.invitations.port
-  (require [com.github.tavlima.nubank.reward.invitations.controller :as controller]))
+  (require [com.github.tavlima.nubank.reward.invitations.altcontroller :as controller]))
 
 (defn invite [tree inviterId inviteeId]
   (controller/invite tree inviterId inviteeId))

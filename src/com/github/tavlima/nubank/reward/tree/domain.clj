@@ -1,5 +1,6 @@
 (ns com.github.tavlima.nubank.reward.tree.domain
-  (require [com.github.tavlima.nubank.reward.tree.location :as loc]))
+  (require [com.github.tavlima.nubank.reward.tree.location :as loc])
+  (:refer-clojure :exclude [empty?]))
 
 ;; TreeNode
 (defprotocol ITreeNode
@@ -16,6 +17,7 @@
 
 ;; Tree
 (defprotocol ITree
+  (empty? [tree])                                           ; TODO testar
   (add [tree uid])
   (replaceRoot [tree node])
   (containsUid? [tree uid])
@@ -43,6 +45,7 @@
 
 (defrecord Tree [root uids]
   ITree
+  (empty? [_] (and (nil? root) (clojure.core/empty? uids)))
   (add [tree uid] (assoc tree :uids (conj uids uid)))
   (replaceRoot [tree node] (assoc tree :root node))
   (containsUid? [_ key] (contains? uids key))
