@@ -1,9 +1,8 @@
-(ns com.github.tavlima.nubank.reward.tree.location
+(ns com.github.tavlima.nubank.reward.tree.domain.location
+  (:require [com.github.tavlima.nubank.reward.tree.domain.zippable :as z])
   (:refer-clojure :exclude [update replace next]))
 
-(declare cloneLoc)
-
-(defprotocol ILocation
+(defprotocol Location
   "Represents a location in an agnostic tree."
   (node [loc])
   (end? [loc])
@@ -16,51 +15,37 @@
   (root [loc])
   (append-child [loc child]))
 
-(defprotocol ILocatable
-  "Helper protocol for the Location extension
-  of the ILocation protocol"
-  (children [node])
-  (make [node children])
-  (zipper [node]))
-
-#_(extend-protocol ILocatable
-  Keyword
-  (children [node]
-    (if (= node :nil) [] (throw IllegalArgumentException)))
-  (make [node _]
-    (if (= node :nil) :nil (throw IllegalArgumentException))))
-
-(defrecord Location [node path s-left s-right]
-  ILocation
+(defrecord LocationImpl [node path s-left s-right]
+  Location
   (node [_] node)
 
   (end? [_] (= node :nil))
 
   (replace [_ newNode]
-    (->Location newNode path s-left s-right))
+    (->LocationImpl newNode path s-left s-right))
 
   (update [_ transform]
-    (->Location (transform node) path s-left s-right))
+    (->LocationImpl (transform node) path s-left s-right))
 
   (append-child [_ child]
-    (-> (children node)
+    (-> (z/children node)
         (conj child)
-        (#(make node %))
-        (->Location path s-left s-right)))
+        (#(z/make node %))
+        (->LocationImpl path s-left s-right)))
 
   (down [_]
-    (let [[child & others] (children node)]
+    (let [[child & others] (z/children node)]
       (if child
-        (->Location child
-                    (cons node path)
-                    [s-left]
-                    (conj (into [] others) s-right))
+        (->LocationImpl child
+                        (cons node path)
+                        [s-left]
+                        (conj (into [] others) s-right))
         nil)))
 
   (right [_]
     (let [[sibling & others] s-right]
       (if ((complement vector?) sibling)
-        (->Location sibling path (conj s-left node) (into [] others))
+        (->LocationImpl sibling path (conj s-left node) (into [] others))
         nil)))
 
   (up [_]
@@ -71,9 +56,9 @@
               siblings-right (into [] (butlast s-right))
               parent-right (last s-right)
               new-parent-children (concat (conj (into [] siblings-left) node) siblings-right)
-              new-node (make parent new-parent-children)
+              new-node (z/make parent new-parent-children)
               new-path (into [] others)]
-          (->Location new-node new-path parent-left parent-right)))))
+          (->LocationImpl new-node new-path parent-left parent-right)))))
 
   (root [loc]
     (loop [curLoc loc]
