@@ -4,8 +4,8 @@
              [tree :as t]
              [treenode :as n]
              [location :as l]
-             [zippable :as z]])
-  (:import (clojure.lang IPersistentMap)))
+             [t-zippable :as tz]
+             [t-treenode :as tn]]))
 
 (facts "about `create-tree`"
        (fact "it creates a new tree with no :root and an empty set of :uids"

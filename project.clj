@@ -21,7 +21,7 @@
   :profiles {:production {:env {:production true}}
              :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "com.github.tavlima.nubank.reward.main.server/run-dev"]}
                    :dependencies [[io.pedestal/pedestal.service-tools "0.5.1"]
-                                  [midje "1.8.3"]]
+                                  [midje "1.8.3" :exclusions [org.clojure/clojure]]]
                    :plugins [[lein-midje "3.2.1"]]}
              :uberjar {:aot [com.github.tavlima.nubank.reward.main.server]}}
   :main ^{:skip-aot true} com.github.tavlima.nubank.reward.main.server)
