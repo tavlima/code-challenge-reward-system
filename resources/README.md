@@ -6,23 +6,33 @@ A Clojure solution for the Nubank's Reward System Code Challenge.
 
 This solution was written in Clojure, with Pedestal as the web framework, Leiningen as build tool and Midje as the testing lib.
 
-I also tried to follow the [hexagonal/port-adapter architecture](http://alistair.cockburn.us/Hexagonal+architecture) but, as I had no previous experience with Clojure nor this particular architecture, I'm sure there's a lot of room to improvement.  
+I tried to follow some best practices, the [hexagonal/port-adapter architecture](http://alistair.cockburn.us/Hexagonal+architecture) and the "Clojure Way of Building Great Stuff®" but, as I had no previous experience with Clojure nor this particular architecture, I'm pretty sure there's a lot of room to improvement.
 
 ### Namespaces
 
-The code is split in 4 namespaces:
+The code is split in 5 namespaces:
 
-* **invitations** - tree navigation/operations and business rules
+* **tree** - tree navigation/operations
+* **invitations** - tree node implementation (User) and business rules
 * **persistence** - stores the invitations' tree
 * **rest** - drives the application by HTTP requests
 * **main** - Pedestal boilerplate, routes and input file handling
 
+#### tree
+
+This code was *heavily* inspired by the `clojure.zip` module and functions. I used some protocols to define the interfaces and records implementing them. Only the required functions for this challenge where implemented, so there's no backward navigation or branching control, like in the `clojure.zip` module. All the namespaces here are nested into the `tree.domain` namespace.
+
+* **location** - Defines both the `Location` protocol and the `LocationImpl` record. The record encapsulates all the navigation logic and context.
+* **zippable** - Defines the `Zippable` protocol, much like the functions you are required to provide as arguments to `clojure.zip/zipper`, to provide an abstraction to build `LocationImpl` on top and simplify the module usage.
+* **tree** - A `Tree` protocol and it's companion record, `TreeImpl`. The protocol specify some search helper functions (`findFirst` and `findFirstByMatcher`) since those can be type and business agnostic. The record has a `uids` hash-set to speed-up exists/contains operations.
+* **treenode** - A simple `TreeNode` protocol, on top of which the `TreeImpl` is built. 
+
 #### invitations
 
-Most of the code in this namespace operates over a tree/map, with a `:root` node and an additional `:users` hash-set to speed-up exists/contains operations. All the operations that requires a navigation or update over the tree are made through the `clojure.zip/zipper` utility and related functions.
+This namespace constrains most of the business code, including the domain protocol `User` and the `UserImpl` record.
 
-* **domain** - Functions that manipulates the tree and it's nodes (create, find, add score, etc) as well as the zipper functions
-* **controller** - Functions that implements the business rules by coordinating the tree navigation, checks and updates
+* **domain.user** - Defines the `UserImpl` record, which extends not only the `User` protocol but also the `tree.domain.zippable/Zippable` and `tree.domain.treenode/TreeNode`.
+* **controller** - Functions that implement the business rules by coordinating the tree navigation, checks and updates
 * **port** - The "public" interface of this namespace/component. Currently, it just wraps the controller's functions that should be publicly exposed.
 
 #### persistence
@@ -44,7 +54,7 @@ This persistence module is backed by a single `atom`, where the current invitati
 
 ### Tests
 
-I tried to keep the tests as simple as possible, focusing on the `invitations` namespace. Besides being mostly straight-forward, the remaining namespaces and functions would require some mocking/integration machinery to be fully tested.
+I tried to keep the tests as simple as possible, focusing on the `invitations` and `tree` namespace. Besides being mostly straight-forward, the remaining namespaces and functions would require some mocking/integration machinery to be fully tested.
 
 ## Build and running
 
